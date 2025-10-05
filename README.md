@@ -43,10 +43,10 @@ Sobrevive en el espacio completando misiones, gestionando tus recursos y aprendi
 ## 📥 Descargas
 
 | Plataforma | Descarga | Tamaño |
-|-----------|----------|--------|
-| 🍎 macOS | [SpaceHub-1.0.0.dmg](../../releases/download/v1.0.0/SpaceHub-1.0.0.dmg) | ~95 MB |
-| 🪟 Windows | [SpaceHub-Setup-1.0.0.exe](../../releases/download/v1.0.0/SpaceHub-Setup-1.0.0.exe) | ~100 MB |
-| 🐧 Linux | [SpaceHub-1.0.0.AppImage](../../releases/download/v1.0.0/SpaceHub-1.0.0.AppImage) | ~100 MB |
+|-------------|-----------|--------|
+| 🍎 macOS | [SpaceHub-1.0.0.dmg](https://github.com/FrancoJReguerin/SpaceHub/releases/download/v1.0.0/SpaceHub-1.0.0.dmg) | 94.6 MB |
+| 🪟 Windows | [SpaceHub-Setup-1.0.0.exe](https://github.com/FrancoJReguerin/SpaceHub/releases/download/v1.0.0/SpaceHub.Setup.1.0.0.exe) | 78 MB |
+| 🐧 Linux | [SpaceHub-1.0.0.AppImage](https://github.com/FrancoJReguerin/SpaceHub/releases/download/v1.0.0/SpaceHub-1.0.0.AppImage) | 99.5 MB |
 
 **[📦 Ver todas las versiones](../../releases)**
 
