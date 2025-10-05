@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceHub - Aventura Espacial Educativa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Intro Animation -->
+    <div class="intro-screen" id="introScreen">
+        <div class="intro-content">
+            <div class="logo-container">
+                <h1 class="game-logo">SpaceHub</h1>
+                <div class="logo-subtitle">Una Aventura Espacial Educativa</div>
+            </div>
+            
+            <div class="credits-container">
+                <h2 class="credits-title">Creado por</h2>
+                <div class="credits-list">
+                    <div class="credit-item">Franco Reguerin</div>
+                    <div class="credit-item">Alejandro Mendoza</div>
+                    <div class="credit-item">Rudy Navarro</div>
+                    <div class="credit-item">Octavio Pereyra</div>
+                    <div class="credit-item">Cesar Pereyra</div>
+                    <div class="credit-item">Diego Peña</div>
+                </div>
+            </div>
+            
+            <div class="loading-bar">
+                <div class="loading-fill" id="loadingFill"></div>
+            </div>
+            <p class="loading-text">Cargando...</p>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen" style="display: none;">
+        <div class="start-content">
+            <h1 class="start-title">🚀 HABITANTE ESPACIAL</h1>
+            <p class="start-subtitle">Misión de Supervivencia en el Espacio</p>
+            
+            <div class="astronaut-selection">
+                <h2>Selecciona tu Astronauta</h2>
+                <p class="selection-hint">Astronautas legendarios que han explorado el espacio</p>
+                
+                <div class="astronauts-grid" id="astronautsGrid">
+                    <!-- Astronauts will be loaded here -->
+                </div>
+            </div>
+            
+            <button class="start-btn" id="startGameBtn" disabled>
+                🚀 INICIAR MISIÓN
+            </button>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <!-- Header -->
+        <header class="game-header">
+            <h1>🚀 SPACEHUB</h1>
+            <p id="astronautName" style="text-align: center; color: #00ff88; font-size: 1.2em; margin-bottom: 10px;"></p>
+            <div class="stats-bar">
+                <div class="stat">
+                    <span class="stat-label">⚡ Energía:</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill energy-fill" id="energyBar"></div>
+                    </div>
+                    <span class="stat-value" id="energyValue">100</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">🧬 Oxígeno:</span>
+                    <div class="stat-bar">
+                        <div class="stat-fill oxygen-fill" id="oxygenBar"></div>
+                    </div>
+                    <span class="stat-value" id="oxygenValue">100</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">⭐ Puntos:</span>
+                    <span class="stat-value" id="scoreValue">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">📅 Día:</span>
+                    <span class="stat-value" id="dayValue">1</span>
+                </div>
+            </div>
+            <div class="controls-hint" id="controlsHint">
+                <span>🎮 Controles: WASD para mover | E para interactuar | ESPACIO para disparar (Marte) | ESC para pausar</span>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <div class="game-main">
+            <!-- Canvas Game Area -->
+            <div class="canvas-container">
+                <canvas id="gameCanvas"></canvas>
+                <div class="interaction-prompt" id="interactionPrompt">
+                    Presiona E para interactuar
+                </div>
+            </div>
+
+            <!-- Side Panel -->
+            <div class="side-panel">
+                <div class="mission-panel">
+                    <h2>📋 Misiones Activas</h2>
+                    <div class="missions-list" id="missionsList">
+                        <!-- Missions will be dynamically added here -->
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Acciones Rápidas</h3>
+                    <button class="quick-btn" id="mapBtn">
+                        <span class="btn-icon">🗺️</span>
+                        <span class="btn-text">Mapa</span>
+                    </button>
+                    <button class="quick-btn" id="inventoryBtn">
+                        <span class="btn-icon">🎒</span>
+                        <span class="btn-text">Inventario</span>
+                    </button>
+                    <button class="quick-btn" id="marsBtn">
+                        <span class="btn-icon">🔴</span>
+                        <span class="btn-text">Ir a Marte</span>
+                    </button>
+                </div>
+
+                <div class="log-panel">
+                    <h3>Registro</h3>
+                    <div class="log-content" id="logContent">
+                        <p class="log-entry">🚀 Usa WASD para moverte por la nave</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Minigame Modal -->
+        <div class="modal" id="minigameModal">
+            <div class="modal-content minigame-content">
+                <button class="close-btn" id="closeMinigame">✕</button>
+                <h2 id="minigameTitle">Minijuego</h2>
+                <div id="minigameContainer">
+                    <!-- Minigame content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Modal -->
+        <div class="modal" id="mapModal">
+            <div class="modal-content map-content">
+                <button class="close-btn" id="closeMap">✕</button>
+                <h2>🗺️ Mapa de la Nave</h2>
+                <div class="map-container" id="mapContainer">
+                    <!-- Map will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Modal -->
+        <div class="modal" id="inventoryModal">
+            <div class="modal-content inventory-content">
+                <button class="close-btn" id="closeInventory">✕</button>
+                <h2>🎒 Inventario</h2>
+                <div class="inventory-grid" id="inventoryGrid">
+                    <!-- Inventory items will be shown here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal" id="gameOverModal">
+            <div class="modal-content">
+                <h2>🚨 MISIÓN TERMINADA</h2>
+                <p id="gameOverMessage"></p>
+                <p>Puntuación Final: <span id="finalScore"></span></p>
+                <p>Días Sobrevividos: <span id="finalDays"></span></p>
+                <button class="restart-btn" id="restartBtn">Reiniciar Misión</button>
+            </div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div class="modal" id="pauseModal">
+            <div class="modal-content pause-content">
+                <h2>⏸️ PAUSA</h2>
+                <button class="menu-btn" id="resumeBtn">Continuar</button>
+                <button class="menu-btn" id="restartFromPauseBtn">Reiniciar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
