@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceHub Demo Recorder</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0a0e27;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #00ff88;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        button {
+            background: #00ff88;
+            color: #0a0e27;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00cc6a;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        .recording {
+            color: #ff4444;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 3px solid #00ff88;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .instructions {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .instructions h2 {
+            color: #00ff88;
+            margin-top: 0;
+        }
+        .instructions ol {
+            line-height: 1.8;
+        }
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 SpaceHub Demo Recorder</h1>
+        
+        <div class="instructions">
+            <h2>📋 Instrucciones:</h2>
+            <ol>
+                <li>Haz clic en <strong>"Iniciar Grabación"</strong></li>
+                <li>Selecciona la pestaña del juego cuando Chrome te lo pida</li>
+                <li>El juego se grabará automáticamente por 10 segundos</li>
+                <li>Al terminar, se descargará el video automáticamente</li>
+                <li>El video estará en formato WebM (puedes convertirlo a MP4 si necesitas)</li>
+            </ol>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn" onclick="startRecording()">🔴 Iniciar Grabación</button>
+            <button id="stopBtn" onclick="stopRecording()" disabled>⏹️ Detener Grabación</button>
+            <button id="openGameBtn" onclick="openGame()">🎮 Abrir Juego en Nueva Pestaña</button>
+        </div>
+
+        <div class="status">
+            <div id="status">Listo para grabar</div>
+            <div id="timer" class="timer"></div>
+        </div>
+
+        <div class="instructions">
+            <h2>💡 Consejos:</h2>
+            <ul>
+                <li>Asegúrate de que el juego esté visible y funcionando antes de grabar</li>
+                <li>La grabación capturará exactamente lo que veas en la pestaña del juego</li>
+                <li>Si quieres grabar más de 10 segundos, haz clic en "Detener Grabación" manualmente</li>
+                <li>Para convertir WebM a MP4, usa: <code>ffmpeg -i demo.webm demo.mp4</code> o un convertidor online</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let timerInterval;
+        let secondsRecorded = 0;
+
+        function openGame() {
+            window.open('index.html', '_blank');
+            document.getElementById('status').innerHTML = '✅ Juego abierto en nueva pestaña. Ahora puedes iniciar la grabación.';
+        }
+
+        async function startRecording() {
+            try {
+                // Solicitar captura de pantalla
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: {
+                        mediaSource: 'screen',
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        frameRate: { ideal: 30 }
+                    },
+                    audio: false
+                });
+
+                recordedChunks = [];
+                secondsRecorded = 0;
+
+                // Configurar MediaRecorder
+                const options = { mimeType: 'video/webm;codecs=vp9' };
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    options.mimeType = 'video/webm;codecs=vp8';
+                }
+                
+                mediaRecorder = new MediaRecorder(stream, options);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Descargar automáticamente
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'spacehub-demo.webm';
+                    a.click();
+                    
+                    document.getElementById('status').innerHTML = '✅ ¡Video descargado! Revisa tu carpeta de Descargas.';
+                    document.getElementById('timer').textContent = '';
+                    
+                    // Detener el stream
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('status').innerHTML = '<span class="recording">🔴 GRABANDO...</span>';
+                
+                // Timer
+                timerInterval = setInterval(() => {
+                    secondsRecorded++;
+                    document.getElementById('timer').textContent = `${secondsRecorded} segundos`;
+                    
+                    // Detener automáticamente después de 10 segundos
+                    if (secondsRecorded >= 10) {
+                        stopRecording();
+                    }
+                }, 1000);
+
+            } catch (err) {
+                console.error('Error al iniciar grabación:', err);
+                document.getElementById('status').innerHTML = '❌ Error: ' + err.message;
+                document.getElementById('startBtn').disabled = false;
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                clearInterval(timerInterval);
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+            }
+        }
+
+        // Detener grabación si se cierra la página
+        window.addEventListener('beforeunload', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        });
+    </script>
+</body>
+</html>
