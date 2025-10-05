@@ -42,10 +42,6 @@ Sobrevive en el espacio completando misiones, gestionando tus recursos y aprendi
 
 ## 📥 Descargas
 
-### Versión Desktop (Electron)
-
-> **📌 Nota:** Para que las descargas funcionen, primero debes crear una release en GitHub siguiendo la [Guía de Releases](GUIA_RELEASES_GITHUB.md)
-
 | Plataforma | Descarga | Tamaño |
 |-----------|----------|--------|
 | 🍎 macOS | [SpaceHub-1.0.0.dmg](../../releases/download/v1.0.0/SpaceHub-1.0.0.dmg) | ~95 MB |
