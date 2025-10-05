@@ -56,8 +56,6 @@ También puedes jugar directamente en tu navegador:
 2. Abre `index.html` en tu navegador
 3. ¡Juega!
 
-**[🎮 Jugar versión web online](../../) (si tienes GitHub Pages activado)**
-
 ## 🛠️ Desarrollo
 
 ### Requisitos Previos
